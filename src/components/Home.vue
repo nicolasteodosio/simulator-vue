@@ -35,9 +35,10 @@
       </div>
       <div class=" col-md-6 jumbotron">
         <h1>Simulação</h1>
-        <p> {{ loan }}</p>
-        <p> {{ taxSelected }}</p>
-        <p> {{ timeSelected }}</p>
+        <p> <b>Empréstimo pego:</b> R${{ loan }}</p>
+        <p> <b>Taxa de juros ao mês:</b> {{ taxSelected }}%</p>
+        <p> <b>Meses para pagar:</b> {{ timeSelected }}</p>
+        <p> <b>Montante:</b> R${{ simulateLoan }}</p>
       </div>
     </div>
   </div>
@@ -57,9 +58,13 @@
       };
     },
     computed: {
-        simulateLoan(){
-
+      simulateLoan() {
+        if (this.loan && this.taxSelected && this.timeSelected) {
+          const fixedTax = this.taxSelected / 100;
+          return this.loan * (1 + (fixedTax * this.timeSelected));
         }
+        return '';
+      },
     },
   };
 </script>
