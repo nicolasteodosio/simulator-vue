@@ -6,7 +6,7 @@
         <loanform :taxSelected="taxSelected" :timeSelected="timeSelected" :loan="loan"
           :timesToPay="timesToPay" :loanTaxes="loanTaxes"></loanform>
       </div>
-      <simulator :simulateLoan="simulateLoan"
+      <simulator :simulateLoan="simulateLoan()"
                  :loan="loan" :taxSelected="taxSelected" :timeSelected="timeSelected"></simulator>
     </div>
   </div>
