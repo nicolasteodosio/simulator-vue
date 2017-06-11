@@ -3,67 +3,50 @@
     <h1>{{ msg }}</h1>
     <div class="row">
       <div class="col-md-6">
-        <!--{{ loanValid }}-->
-        <form>
-          <label for="loanValue">Valor do empréstimo</label>
-          <div class="input-group form-group" :class="{'has-error': errors.has('loan')}">
-            <span class="input-group-addon">$</span>
-            <input id="loanValue"
-                   v-validate="{ rules: { required: true, max_value:100000 } }"
-                   v-on:input="loan = $event.target.value" type="text"
-                   name="loan" class="form-control">
-          </div>
-          <span v-show="errors.has('loan')">{{ errors.first('loan') }}</span>
-          <div class="form-group">
-            <label for="loanTimesPay">Meses para pagar</label>
-            <select class="form-control" v-model="timeSelected"
-                    id="loanTimesPay">
-              <option  v-for="timetoPay in timesToPay"
-                       v-bind:value="timetoPay">{{ timetoPay }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="loanTax">Juros</label>
-            <select class="form-control" id="loanTax" v-model="taxSelected">
-              <option  v-for="loanTax in loanTaxes"
-                       v-bind:value="loanTax">{{ loanTax }}</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
+        <loanform :taxSelected="taxSelected" :timeSelected="timeSelected" :loan="loan"
+          :timesToPay="timesToPay" :loanTaxes="loanTaxes"></loanform>
       </div>
-      <div class=" col-md-6 jumbotron">
-        <h1>Simulação</h1>
-        <p> <b>Empréstimo pego:</b> R${{ loan }}</p>
-        <p> <b>Taxa de juros ao mês:</b> {{ taxSelected }}%</p>
-        <p> <b>Meses para pagar:</b> {{ timeSelected }}</p>
-        <p> <b>Montante:</b> R${{ simulateLoan }}</p>
-      </div>
+      <simulator :simulateLoan="simulateLoan"
+                 :loan="loan" :taxSelected="taxSelected" :timeSelected="timeSelected"></simulator>
     </div>
   </div>
 </template>
 
 <script>
+  import Simulator from '@/components/Simulator';
+  import LoanForm from '@/components/LoanForm';
+
   export default {
+    components: {
+      simulator: Simulator,
+      loanform: LoanForm,
+    },
     name: 'home',
     data() {
       return {
         loan: '',
         taxSelected: '',
         timeSelected: '',
-        msg: 'Vue simulator',
+        msg: 'Loan simulator',
         timesToPay: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         loanTaxes: [3, 4, 5, 6, 7, 8],
       };
     },
     computed: {
       simulateLoan() {
-        if (this.loan && this.taxSelected && this.timeSelected) {
+        if (this.loan && this.loan < 100000 && this.taxSelected && this.timeSelected) {
           const fixedTax = this.taxSelected / 100;
           return this.loan * (1 + (fixedTax * this.timeSelected));
         }
         return '';
+      },
+      methods: {
+        onSubmit() {
+          if (this.loan && this.loan < 100000 && this.taxSelected && this.timeSelected) {
+            this.$http.post('https://httpbin.org/post')
+              .then(this.$router.go('/login'));
+          }
+        },
       },
     },
   };
@@ -75,8 +58,4 @@
     font-weight: normal;
   }
 
-  .center {
-    text-align: center;
-
-  }
 </style>
