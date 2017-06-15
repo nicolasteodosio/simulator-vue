@@ -16,7 +16,6 @@
     "bootstrap": "^3.3.7",
     "bootstrap-vue": "^0.16.1",
     "compression-webpack-plugin": "^0.4.0",
-    "lodash": "^4.17.4",
     "style-loader": "^0.18.2",
     "vee-validate": "^2.0.0-rc.5",
     "vue": "^2.3.3",
