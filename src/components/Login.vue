@@ -2,15 +2,23 @@
     <div class="container">
       <div class="row">
           <div class="col-md-offset-4 col-md-6">
-              <div class="form-login">
+              <div class="form-login" >
                 <h4>Bem vindo, por favor se identifique.</h4>
-                <input type="text"  v-validate="{ rules: { required: true}}" id="userCnpj" class="form-control input-sm chat-input" placeholder="cnpj" />
-                </br>
-                <input type="password"  v-validate="{rules: {required: true}}" id="userPassword" class="form-control input-sm chat-input" placeholder="senha" />
-                </br>
+                <form id="loginForm" name="loginForm">
+                  <div :class="{'has-error': errors.has('email')}" class="form-group">
+                    <input  type="text" v-model="email" name="email" v-validate="{ rules: { required: true, email: true}}" id="userEmail" class="form-control input-sm chat-input" placeholder="E-mail" />
+                    <span class="form-error" v-show="errors.has('email')">{{ errors.first('email') }}</span>
+                    </br>
+                  </div>
+                  <div :class="{'has-error': errors.has('cnpj')}" class="form-group">
+                    <input type="text" v-model="cnpj" name="cnpj" v-validate="{rules: {required: true, numeric: true}}" id="userCnpj" class="form-control input-sm chat-input" placeholder="Cnpj" />
+                    <span class="form-error" v-show="errors.has('cnpj')">{{ errors.first('cnpj') }}</span>
+                    </br>
+                  </div>
+                </form>
                 <div class="wrapper">
                   <span class="group-btn">
-                      <a href="#" class="btn btn-primary btn-md">Entrar</a>
+                      <button @click="sendLogin()" class="btn btn-primary btn-md">Entrar</button>
                   </span>
                 </div>
               </div>
@@ -24,8 +32,23 @@
     data() {
       return {
         cnpj: '',
-        passowrd: '',
+        email: '',
       };
+    },
+    methods: {
+      sendLogin() {
+        this.$validator.validateAll()
+          .then((success) => {
+            if (success) {
+              const data = { cnpj: this.cnpj, email: this.email };
+              this.$http.post('https://httpbin.org/post', data)
+                .then(() => {
+                  this.$router.push('/');
+                  // eslint-disable-next-line
+                }, err => console.log(err));
+            }
+          });
+      },
     },
   };
 </script>
@@ -59,6 +82,10 @@ h4 {
 
 .form-control {
     border-radius: 10px;
+}
+
+.form-error {
+  color: firebrick;
 }
 
 .wrapper {

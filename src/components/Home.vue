@@ -27,13 +27,6 @@
         msg: 'Loan simulator',
       };
     },
-
-    methods: {
-      onSubmit() {
-        this.$http.post('https://httpbin.org/post')
-          .then(this.$router.go('/login'));
-      },
-    },
   };
 </script>
 

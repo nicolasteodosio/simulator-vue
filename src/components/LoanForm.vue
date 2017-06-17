@@ -4,12 +4,12 @@
     <div class="input-group form-group" :class="{'has-error': errors.has('loan')}">
       <span class="input-group-addon">$</span>
       <input id="loanValue"
-             v-validate="{ rules: { required: true, max_value:100000 } }"
+             v-validate="{ rules: { numeric: true, required: true, max_value:100000 } }"
              v-model="loan.value"
              v-on:input.trim="loan.value" type="text"
              name="loan" class="form-control">
     </div>
-    <span v-show="errors.has('loan')">{{ errors.first('loan') }}</span>
+    <span class='form-error' v-show="errors.has('loan')">{{ errors.first('loan') }}</span>
     <div class="form-group">
       <label for="loanTimesPay">Meses para pagar</label>
       <select class="form-control" v-model="loan.timeSelected"
@@ -30,9 +30,7 @@
       </select>
     </div>
 
-    <router-link to="/login">
-      <button type="submit" class="btn btn-primary">Solicitar empréstimo</button>
-    </router-link>
+      <button type="submit" @click="sendLoan()" class="btn btn-primary">Solicitar empréstimo</button>
   </form>
 </template>
 
@@ -46,8 +44,29 @@
         loanTaxes: [3, 4, 5, 6, 7, 8],
       };
     },
+    methods: {
+      sendLoan() {
+        this.$validator.validateAll()
+          .then((success) => {
+            if (success) {
+              const data = { loan: this.loan.value,
+                timeSelected: this.loan.timeSelected,
+                taxSelected: this.loan.taxSelected };
+              this.$http.post('https://httpbin.org/post', data)
+                .then(() => {
+                  this.$router.push('/login');
+                  // eslint-disable-next-line
+                }, err => console.log(err));
+            }
+          });
+      },
+    },
   };
 
 </script>
 
-<style></style>
+<style>
+  .form-error {
+    color: firebrick;
+  }
+</style>
