@@ -30,7 +30,7 @@
       </select>
     </div>
 
-      <button type="submit" @click="sendLoan()" class="btn btn-primary">Solicitar empréstimo</button>
+      <button @click="sendLoan()" class="btn btn-primary">Solicitar empréstimo</button>
   </form>
 </template>
 
@@ -44,21 +44,28 @@
         loanTaxes: [3, 4, 5, 6, 7, 8],
       };
     },
+    notifications: {
+      showLoanError: {
+        title: 'Erro',
+        message: 'Empréstimo não validado',
+        type: 'error',
+      },
+      showLoanSuccess: {
+        title: 'Sucesso',
+        message: 'Empréstimo validado',
+        type: 'success',
+      },
+    },
     methods: {
       sendLoan() {
-        this.$validator.validateAll()
-          .then((success) => {
-            if (success) {
-              const data = { loan: this.loan.value,
-                timeSelected: this.loan.timeSelected,
-                taxSelected: this.loan.taxSelected };
-              this.$http.post('https://httpbin.org/post', data)
-                .then(() => {
-                  this.$router.push('/login');
-                  // eslint-disable-next-line
-                }, err => console.log(err));
-            }
-          });
+        this.$validator.validateAll().then((success) => {
+          if (success) {
+            this.showLoanSuccess();
+            this.$router.push({ path: '/login' });
+          }
+        }).catch(() => {
+          this.showLoanError();
+        });
       },
     },
   };

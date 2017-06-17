@@ -35,6 +35,18 @@
         email: '',
       };
     },
+    notifications: {
+      showLoginError: {
+        title: 'Erro ao entrar',
+        message: 'Falha de autenticação',
+        type: 'error',
+      },
+      showLoginSuccess: {
+        title: 'Bem vindo',
+        message: 'Autenticação realizada com sucesso',
+        type: 'success',
+      },
+    },
     methods: {
       sendLogin() {
         this.$validator.validateAll()
@@ -43,10 +55,13 @@
               const data = { cnpj: this.cnpj, email: this.email };
               this.$http.post('https://httpbin.org/post', data)
                 .then(() => {
-                  this.$router.push('/');
+                  this.showLoginSuccess();
+                  this.$router.push({ path: '/' });
                   // eslint-disable-next-line
-                }, err => console.log(err));
+                }, err => this.showLoginError());
             }
+          }).catch(() => {
+            this.showLoginError();
           });
       },
     },
