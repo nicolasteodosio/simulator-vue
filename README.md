@@ -5,7 +5,16 @@
 ## Build Setup
 
 ``` bash
-# install dependencies
+# If you want first install yarn
+
+# For ubuntu
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  sudo apt-get update && sudo apt-get install yarn
+# Other OS see
+  https://yarnpkg.com/lang/en/docs/install/
+
+# install dependencies if not using yarn use npm instead
 yarn install
 
 # serve with hot reload at localhost:8080
