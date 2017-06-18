@@ -16,6 +16,7 @@ describe('Home component', () => {
   });
   it('sets the correct default data', () => {
     const defaultData = Home.data();
-    expect(defaultData.loan).to.equal(new Loan());
+    const loan = new Loan();
+    expect(defaultData.loan).to.equal(loan);
   });
 });
